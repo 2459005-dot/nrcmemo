@@ -1,62 +1,63 @@
-const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
+const express = require("express")
+const router = express.Router()
+const jwt = require("jsonwebtoken")
+const bcrypt = require("bcrypt")
+const User = require("../models/User")
 
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-const userSchema = new mongoose.Schema(
-    {
-        email: {
-            type: String,
-            required: true,
-            lowercase: true,
-            trim: true,
-            match: [EMAIL_REGEX, "유효한 이메일"]
+function makeToken(user) {
+    return jwt.sign(
+        {
+            id: user._id.toString(),
+            role: user.role,
+            email: user.email
         },
-
-        passwordHash: {
-            type: String,
-            required: true
-        },
-
-        displayName: {
-            type: String,
-            trim: true,
-            default: ""
-        },
-
-        role: {
-            type: String,
-            enum: ["user", "admin"],
-            default: "user",
-            index: true
-        },
-
-        isActive: {
-            type: Boolean,
-            default: true
-        },
-
-        isLoggined: {
-            type: Boolean,
-            default: false
+        process.env.JWT_SECRET,
+        {
+            expiresIn: "7d"
         }
-    },
+    )
+}
 
-    {
-        timestamps: true
+router.post("/register", async (req, res) => {
+    try {
+        const { email, password, displayName, role } = req.body
+
+        if (!email || !password) {
+            return res.status(400).json({ message: "이메일/비밀번호 필요" })
+        }
+
+        const exists = await User.findOne({
+            email: email.toLowerCase()
+        })
+
+        if (exists) {
+
+            return res.status(400).json({ message: "이미 가입된 이메일" })
+        }
+
+        const passwordHash = await bcrypt.hash(password, 10)
+
+        const validRoles = ["user", "admin"]
+        const safeRole = validRoles.includes(role) ? role : "user"
+
+        const user = await User.create({
+            email,
+            displayName,
+            passwordHash,
+            role: safeRole
+        })
+
+        res.status(201).json({ user: user.toSafeJSON() })
+
+    } catch (error) {
+        return res.status(500).json({
+            message: "회원가입 실패",
+            error: error.message
+        })
     }
-)
+})
 
-userSchema.methods.comparePassword = function (plain) {
-    return bcrypt.compare(plain, this.passwordHash)
-}
 
-userSchema.methods.toSafeJSON = function () {
-    const obj = this.toObject({ versionKey: false })
-    delete obj.passwordHash
-    return obj
-}
 
-userSchema.index({ email: 1 }, { unique: true })
 
-module.exports = mongoose.model('User', userSchema)
+module.exports = router
