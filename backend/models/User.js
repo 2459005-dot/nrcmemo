@@ -1,8 +1,6 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
-
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-// 이메일 형식
 
 const userSchema = new mongoose.Schema(
     {
@@ -40,6 +38,11 @@ const userSchema = new mongoose.Schema(
         isLoggined: {
             type: Boolean,
             default: false
+        },
+
+        loginAttempts: {
+            type: Number,
+            default: 0
         }
     },
 
@@ -48,7 +51,7 @@ const userSchema = new mongoose.Schema(
     }
 )
 
-userSchema.method.comparePassword = function (plain) {
+userSchema.methods.comparePassword = function (plain) {
     return bcrypt.compare(plain, this.passwordHash)
 }
 
