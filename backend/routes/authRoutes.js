@@ -123,6 +123,8 @@ router.post("/login", async (req, res) => {
     }
 })
 
+router.use(auth)
+
 router.get("/me", async (req, res) => {
     try {
         const h = req.headers.authorization || ""
@@ -144,7 +146,24 @@ router.get("/me", async (req, res) => {
     }
 })
 
+router.get("/users", async (req, res) => {
+    try {
+        const me = await User.findById(req.user.id)
 
+        if (!me) return res.status(404).json({ message: '사용자 없음' })
+
+        if (me.role !== 'admin') {
+            return res.status(403).json({ message: '권한 없음' })
+        }
+
+        const users = await User.find().select('-passwordHash')
+
+        return res.status(200).json({ users })
+
+    } catch (error) {
+        res.status(401).json({ message: "조회 실패", error: error.message })
+    }
+})
 
 router.post('/logout', async (req, res) => {
     try {
