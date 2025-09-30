@@ -146,4 +146,25 @@ router.get("/me", async (req, res) => {
 
 
 
+router.post('/logout', async (req, res) => {
+    try {
+        await User.findByIdAndUpdate(
+            req.user.id,
+            { $set: { isLoggined: false }, },
+            { new: true }
+        )
+
+        res.clearCookie('token', {
+            httpOnly: true,
+            sameSite: 'lax',
+            secure: 'production'
+        })
+
+        return res.status(200).json({ message: "로그아웃 성공" })
+
+    } catch (error) {
+        return res.status(500).json({ message: "로그아웃 실패", error: error.message })
+    }
+})
+
 module.exports = router
