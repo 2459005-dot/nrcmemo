@@ -2,31 +2,28 @@ const express = require('express')
 const router = express.Router()
 const Post = require('../models/Posts')
 const jwt = require('jsonwebtoken')
-const { presignGet } = require('../src/s3')
 const mongoose = require('mongoose')
+const { authenticateToken } = require('../middlewares/auth');
 
-const authenticateToken = (req, res, next) => {
+const S3_BASE_URL =
+  process.env.S3_BASE_URL ||
+  `https://${process.env.S3_BUCKET}.s3.${process.env.AWS_REGION}.amazonaws.com`; // 추가됨
 
-    let token = null;
-
-    if (req.cookies?.token) token = req.cookies.token
-
-    if (!token && req.headers.authorization) {
-        const h = req.headers.authorization;
-
-        if (h.toLowerCase().startsWith('bearer')) token = h.slice(7)
-    }
-
-    if (!token) return res.status(401).json({ message: '토큰이 없습니다.' })
-
-    try {
-        req.user = jwt.verify(token, process.env.JWT_SECRET)
-        next()
-
-    } catch (error) {
-        return res.status(403).json({ message: '유효하지 않은 토큰입니다.' })
-    }
+function joinS3Url(base, key) {                       // 추가됨
+  const b = String(base || '').replace(/\/+$/, '');
+  const k = String(key || '').replace(/^\/+/, '');
+  return `${b}/${k}`;
 }
+
+const toArray = (val) => {                            // 추가됨: fileUrl/string/JSON 문자열 안전 파싱
+  if (!val) return [];
+  if (Array.isArray(val)) return val.filter(Boolean);
+  if (typeof val === 'string') {
+    try { const parsed = JSON.parse(val); return Array.isArray(parsed) ? parsed.filter(Boolean) : [val]; }
+    catch { return [val]; }
+  }
+  return [];
+};
 
 const ensureObjectId = (req, res, next) => {
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
@@ -35,22 +32,30 @@ const ensureObjectId = (req, res, next) => {
     next()
 }
 
-const pickDefined = (obj) => {
+const pickDefined = (obj) =>
     Object.fromEntries(
         Object.entries(obj)
             .filter(([, v]) => v !== undefined)
     )
-}
 
 router.post('/', authenticateToken, async (req, res) => {
     try {
-        const { title, content, fileUrl = [], imageUrl } = req.body
+        const { title, content, fileUrl, imageUrl } = req.body
+
+        if (typeof fileUrl === 'string') {
+            try {
+                fileUrl = JSON.parse(fileUrl)
+            } catch (error) {
+                fileUrl = [fileUrl]
+            }
+        }
 
         const latest = await Post.findOne().sort({ number: -1 })
 
         const nextNumber = latest ? latest.number + 1 : 1
 
         const post = await Post.create({
+            user: req.user._id || req.user.id,
             number: nextNumber,
             title,
             content,
@@ -78,6 +83,7 @@ router.get('/', async (req, res) => {
                 const urls = await Promise.all(
                     arr.map(async (v) => (v?.startsWith("http") ? v : await presignGet(v, 3600)))
                 )
+
                 return { ...p, fileUrl: urls }
             })
         )
@@ -85,21 +91,21 @@ router.get('/', async (req, res) => {
         res.json(data)
 
     } catch (error) {
-        console.error('GET /api/posts 실패, error')
+        console.error('GET /api/posts 실패', error)
         res.status(500).json({ message: '서버 오류' })
     }
 })
 
 router.get('/my', authenticateToken, async (req, res) => {
     try {
-        const userId = req.user._id || req.user.id
-        if (!userId) return res.status(400).json({ message: '유저 정보 없음' })
+        const userId = req.user.id || req.user._id;
+        if (!userId) return res.status(400).json({ message: '유저 정보 없음' });
 
         const myPosts = await Post.find({ user: userId })
-            .toSorted({ createdAt: -1 })
-            .lean()
+            .sort({ createdAt: -1 })
+            .lean();
 
-        res.json(myPosts)
+        res.json(myPosts);
 
     } catch (error) {
         console.error('GET /api/posts/my 실패', error)
@@ -109,6 +115,7 @@ router.get('/my', authenticateToken, async (req, res) => {
 
 router.get('/:id', async (req, res) => {
     try {
+
         const doc = await Post.findById(req.params.id).lean()
 
         if (!doc) return res.status(404).json({ message: '존재하지 않는 게시글' })
@@ -152,7 +159,7 @@ router.delete('/:id', authenticateToken, ensureObjectId, async (req, res) => {
 
         if (!deleted) return res.status(404).json({ message: '존재하지 않는 게시글' })
 
-        res.json({ ok: true, id: deleted._id })
+        res.json({ok:true, id:deleted._id})
 
     } catch (error) {
         res.status(500).json({ message: '서버 오류' })
