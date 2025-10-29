@@ -1,0 +1,14 @@
+.post-card {
+    .file-card-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        .left {
+            align-items: center;
+            display: flex;
+            gap: 1rem;
+        }
+    }
+    
+}
