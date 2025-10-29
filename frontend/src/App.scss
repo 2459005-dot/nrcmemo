@@ -7,22 +7,3 @@
 @use "./styles/buttons";
 @use "./styles/modal";
 @use "./styles/utils";
-
-.page {
-  padding-top: .5rem;
-  text-align: center;
-
-  .inner {
-    max-width: 80rem;
-    margin: 2rem auto;
-    position: relative;
-    border-radius: var(--radius-l);
-    background-color: var(--bg);
-    box-shadow: var(--shadow-soft);
-    padding: 1rem;
-  }
-
-  @media screen and (max-width:800px) {
-    margin: 0 2rem;
-  }
-}

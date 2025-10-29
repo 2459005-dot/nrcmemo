@@ -1,7 +1,7 @@
 import React from 'react'
-import { useNavigate, NavLink, Link } from 'react-router-dom'
-import "./styles/Header.scss"
 
+import { useNavigate, NavLink, Link } from 'react-router-dom'
+import "./style/Header.scss"
 const Header = ({
     isAuthed,
     user,
@@ -23,7 +23,7 @@ const Header = ({
         <header className='site-header'>
             <div className="inner">
                 <h1 className='logo'>
-                    📷EVERYDAY-NRC-RECORD
+                    📷Photomemo
                 </h1>
                 <div className="auth-area">
                     {isAuthed && (
@@ -33,7 +33,7 @@ const Header = ({
                             </span>
                             <button className='btn logout' onClick={handleLogout}>로그아웃</button>
                         </div>
-                    )}
+                    ) }
                 </div>
             </div>
         </header>

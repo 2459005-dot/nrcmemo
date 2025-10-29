@@ -1,12 +1,12 @@
 
 import './App.scss'
 import { useState, useEffect } from 'react'
-import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
+import { Routes, Route, Navigate,useLocation } from 'react-router-dom'
 import AuthPanel from './components/AuthPanel'
 import Landing from './pages/Landing'
 import Header from './components/Header'
 import ProtectRoute from './components/ProtectRoute'
-import UserDashboard from './pages/user/UserDashboard'
+import UserDashboard from './pages/user/userDashboard'
 import AdminDashboard from './pages/admin/adminDashboard'
 import {
   fetchMe as apiFetchMe,
@@ -14,7 +14,6 @@ import {
   saveAuthToStorage,
   clearAuthStorage
 } from "./api/client"
-
 function App() {
 
   const [user, setUser] = useState(() => {
@@ -22,31 +21,33 @@ function App() {
     return raw ? JSON.parse(raw) : null
   })
 
-  const location = useLocation()
+const location = useLocation()
 
   const [token, setToken] = useState(() => localStorage.getItem('token'))
   const [me, setMe] = useState(null)
   const isAuthed = !!token
-  const hideOn = new Set(['/', '/admin/login'])
+
+
+  const hideOn = new Set(['/','/admin/login'])
   const showHeader = isAuthed && !hideOn.has(location.pathname)
 
 
   const handleAuthed = async ({ user, token }) => {
     try {
+
       setUser(user)
       setToken(token ?? null)
       saveAuthToStorage({ user, token })
       handleFetchMe()
-
     } catch (error) {
       console.error(error)
     }
+
   }
 
   const handleLogout = async () => {
     try {
       await apiLogout()
-
     } catch (error) {
 
     } finally {
@@ -55,6 +56,7 @@ function App() {
       setMe(null)
       clearAuthStorage()
     }
+
   }
 
   const handleFetchMe = async () => {
@@ -75,14 +77,13 @@ function App() {
   return (
     <div className='page'>
       {showHeader && <Header
-        isAuthed={isAuthed}
-        user={user}
-        onLogout={handleLogout}
+      isAuthed={isAuthed}
+      user={user}
+      onLogout={handleLogout}
       />}
 
       <Routes>
         <Route path='/' element={<Landing />} />
-
         {/* 로그인 회원가입 */}
         <Route
           path='/admin/login'
@@ -96,7 +97,6 @@ function App() {
             requiredRole="admin"
           />}
         />
-
         {/* 사용자 보호구역 */}
         <Route
           path='/user'
@@ -106,11 +106,12 @@ function App() {
               isAuthed={isAuthed}
               redirect='/'
             />
-          }>
+          }
+        >
+          
           <Route index element={<Navigate to="/user/dashboard" replace />} />
           <Route path='dashboard' element={<UserDashboard />} />
         </Route>
-
         {/* 관리자 보호구역 */}
         <Route
           path='/admin'
@@ -120,11 +121,11 @@ function App() {
               user={user}
               requiredRole="admin"
             />
-          }>
-          <Route index element={<Navigate to="/admin/dashboard" replace />} />
-          <Route path='dashboard' element={<AdminDashboard />} />
+          }
+        >
+          <Route index element={<Navigate to="/admin/dashboard" replace/>}/>
+          <Route path='dashboard' element={<AdminDashboard/>}/>
         </Route>
-
         <Route path='*' element={<Navigate to="/" replace />} />
       </Routes>
     </div>

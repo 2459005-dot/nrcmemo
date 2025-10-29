@@ -1,14 +1,12 @@
 .inner {
     .search-wrap {
         display: flex;
-        gap: 1rem;
-
+        gap:1rem;
         input {
-            flex: 4;
+            flex:4
         }
-
         .btn {
-            flex: 1;
+            flex:1
         }
     }
 }

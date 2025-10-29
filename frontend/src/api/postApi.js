@@ -1,5 +1,6 @@
 import api from "./client"
 
+
 export const uploadToS3 = async (file) => {
 
     const {
@@ -20,11 +21,12 @@ export const uploadToS3 = async (file) => {
     return key
 }
 
-export const createPost = async ({ title, content, fileKeys }) => {
-    const { data } = await api.post('/api/posts', {
+
+export const createPost = async ({title, content, fileKeys})=>{
+    const {data}= await api.post('/api/posts',{
         title,
         content,
-        fileUrl: fileKeys
+        fileUrl:fileKeys
     })
 
     return data

@@ -1,3 +1,6 @@
+/* =========================
+   Form Elements
+========================= */
 input,
 select,
 textarea {
@@ -25,11 +28,16 @@ textarea {
     }
 }
 
+
+
 textarea {
     min-height: 12rem;
     resize: vertical;
 }
 
+/* =========================
+   Focus / Hover States
+========================= */
 input:focus,
 select:focus,
 textarea:focus {
@@ -62,6 +70,9 @@ label {
     // text-align: left ;
 }
 
+/* =========================
+   File Input (선택 적용)
+========================= */
 input[type="file"] {
     padding: 0;
     /* 내부 패딩 제거 */
@@ -72,6 +83,7 @@ input[type="file"] {
     position: relative;
     border-radius: var(--radius-s);
     background: var(--warning);
+    // color: var(--bg);
     padding: 1rem 1.2rem;
     margin-top: 1rem;
     cursor: pointer;
@@ -96,6 +108,7 @@ input[type="file"] {
             background-color .16s ease,
             box-shadow .16s ease;
     }
+
 
     &:active::file-selector-button {
         transform: translateY(0);

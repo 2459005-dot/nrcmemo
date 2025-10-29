@@ -5,18 +5,22 @@ const cors = require("cors");
 const cookieParser = require('cookie-parser');
 const mongoose = require("mongoose");
 
+
 // authRoutes
-const authRoutes = require("./routes/authroutes")
-const uploadRoutes = require('./routes/upload')
+const authRoutes=require("./routes/authroutes")
+const uploadRoutes=require('./routes/upload')
 const postRoutes = require('./routes/posts')
 
+
+
 const app = express();
-const PORT = process.env.PORT || 3000
+const PORT = process.env.PORT||3000
+
 
 app.use(cors({
   origin: process.env.FRONT_ORIGIN,              // 변경됨: .env 기반 오리진 설정
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // 추가됨: 허용 메서드 명시
+  methods: ['GET','POST','PUT','DELETE','OPTIONS'], // 추가됨: 허용 메서드 명시
   allowedHeaders: ['Content-Type', 'Authorization'] // 추가됨: 허용 헤더 명시
 }));
 
@@ -30,9 +34,10 @@ mongoose.connect(process.env.MONGO_URI)
 
 app.get("/", (_req, res) => res.send("PhotoMemo API OK"));
 
-app.use("/api/auth", authRoutes)
-app.use("/api/posts", postRoutes)
-app.use("/api/upload", uploadRoutes)
+
+app.use("/api/auth",authRoutes)
+app.use("/api/posts",postRoutes)
+app.use("/api/upload",uploadRoutes)
 
 // ── 404
 app.use((req, res, next) => {                    // 추가됨: 없는 경로 처리

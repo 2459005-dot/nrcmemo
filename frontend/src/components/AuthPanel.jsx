@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import './styles/AuthPanel.scss'
+import './style/AuthPanel.scss'
 import AuthModal from "./AuthModal"
 
 const AuthPanel = ({
@@ -16,8 +16,10 @@ const AuthPanel = ({
   const [open, setOpen] = useState(true)
   const hasRequiredRole = !requiredRole || (user && user.role == requiredRole)
   const navigate = useNavigate()
+
   const isAdminPage = requiredRole === 'admin'
   const title = isAdminPage ? '관리자인증' : '로그인'
+
 
   useEffect(() => {
     if (!isAuthed || !user) return
@@ -38,6 +40,7 @@ const AuthPanel = ({
     return (
       <section className='admin-wrap'>
         <div className="inner">
+
           <header className='admin-head'>
             <h1 className='title'>관리자 인증</h1>
             <p>
@@ -52,6 +55,7 @@ const AuthPanel = ({
                 className="btn btn-primary">
                 로그인 / 회원가입
               </button>
+
             </div>
           ) : (
             <div className="auth-row">
@@ -61,7 +65,9 @@ const AuthPanel = ({
                 className={`badge ${hasRequiredRole ? 'badge-ok' : 'badge-warn'} `}>
                 {hasRequiredRole ? 'admin' : `권한없음 : ${requiredRole} 필요`}
               </span>
+
               <div className="auth-actions">
+
                 {hasRequiredRole && (
                   <button className="btn" onClick={onFetchMe}>/me 호출</button>
                 )}
@@ -69,6 +75,8 @@ const AuthPanel = ({
               </div>
             </div>
           )}
+
+
 
           {/* 권한 없음 경고 */}
           {!hasRequiredRole && (
@@ -84,9 +92,12 @@ const AuthPanel = ({
             </pre>
           )}
         </div>
+
       </section>
+
     )
   }
+
 
   return (
     <AuthModal
