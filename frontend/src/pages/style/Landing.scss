@@ -1,13 +1,18 @@
 .landing {
     .landing-hero {
         padding: 6rem 2rem;
-        background: linear-gradient(135deg, #f7f7ff, #fafafa);
+        background: linear-gradient(135deg, var(--bg), var(--surface));
         border-radius: var(--radius-l);
         margin-bottom: 3rem;
         border: .1rem solid var(--surface);
 
         .landing-sub {
             margin: 1rem 0 2rem;
+        }
+
+        .btn{
+            color: var(--text);
+            background-color: var(--bg);
         }
     }
 

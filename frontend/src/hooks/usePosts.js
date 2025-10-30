@@ -4,7 +4,7 @@ import { createPost, fetchMyPosts } from "../api/postApi";
 export function usePosts() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
-
+ 
   const load = useCallback(async () => {
     setLoading(true);
 
@@ -24,7 +24,7 @@ export function usePosts() {
     return created;
   }, []);
 
-useEffect(()=>{load()},[load])
+  useEffect(() => { load() }, [load])
 
   return {
     items,

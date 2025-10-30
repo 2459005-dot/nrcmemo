@@ -1,11 +1,12 @@
 import React from 'react'
-
 import { useNavigate, NavLink, Link } from 'react-router-dom'
 import "./style/Header.scss"
 const Header = ({
     isAuthed,
     user,
-    onLogout
+    onLogout,
+    theme,
+    onToggleTheme
 }) => {
 
     const navigate = useNavigate()
@@ -25,6 +26,10 @@ const Header = ({
                 <h1 className='logo'>
                     📷Photomemo
                 </h1>
+                {/* 1. (추가) 테마 토글 버튼 */}
+                <button onClick={onToggleTheme} className="btn theme-toggle">
+                    {theme === 'light' ? '🌙' : '☀️'}
+                </button>
                 <div className="auth-area">
                     {isAuthed && (
                         <div>
@@ -33,7 +38,7 @@ const Header = ({
                             </span>
                             <button className='btn logout' onClick={handleLogout}>로그아웃</button>
                         </div>
-                    ) }
+                    )}
                 </div>
             </div>
         </header>

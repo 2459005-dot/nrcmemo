@@ -2,7 +2,7 @@ import React from "react";
 import './style/UserPostItem.scss'
 const UserPostItem = ({ item }) => {
 
-  const defaultImage = "/images/default-image.png";
+  const defaultImage = "/images/default-image.jpg";
   
   const files = Array.isArray(item.fileUrl)
     ? item.fileUrl.length > 0

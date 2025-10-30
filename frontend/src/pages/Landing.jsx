@@ -1,11 +1,16 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import "./style/Landing.scss"
-const Landing = () => {
+
+const Landing = ({theme, onToggleTheme}) => {
     return (
         <section className="landing">
             <div className="container">
                 <div className="landing-hero">
+                    {/* 2. (추가) 토글 버튼을 원하는 위치에 추가합니다. (예: 우측 상단) */}
+                    <button onClick={onToggleTheme} className="btn theme-toggle">
+                        {theme === 'light' ? '🌙 다크 모드' : '☀️ 라이트 모드'}
+                    </button>
                     <h1>포토메모</h1>
                     <p className="landing-sub">사진 한 장, 한 줄 메모. 태그 · 검색 · 공유까지.</p>
                     <Link to="/admin/login" className="btn primary">시작하기</Link>

@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-
 import UploadForm from './UploadForm'
 import "./style/UserDashboard.scss"
 import { uploadToS3 } from '../../api/postApi'
@@ -23,7 +22,7 @@ const UserDashboard = () => {
       console.error("[UPLOAD] failed", e);
     }
   };
-
+  
   return (
     <section>
       <div className="inner">
@@ -51,8 +50,8 @@ const UserDashboard = () => {
         <UserPostList
           items={items}
           loading={loading}
-          onReload={load}
-          search={search}
+          onReload={()=>load(search)}
+          //search={search}
         />
       </div>
     </section>

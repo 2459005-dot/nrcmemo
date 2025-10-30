@@ -1,43 +1,68 @@
 .am-backdrop {
     position: fixed;
     inset: 0;
-    background-color: var(--overlay);
+    /* --overlay 변수가 _tokens.scss에 없으면 
+    rgba(0, 0, 0, 0.5) 같은 값으로 직접 지정해야 합니다. 
+  */
+    background-color: var(--overlay, rgba(0, 0, 0, 0.5));
     display: flex;
     align-items: center;
     justify-content: center;
-    .am-panel{
+
+    .am-panel {
         background-color: var(--surface);
         position: relative;
-        width: min(92vw,42rem);
+        width: min(92vw, 42rem);
         border-radius: var(--radius-l);
-        box-shadow: 0 1rem 3rem  rgba(0, 0, 0, 0.321);
+        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.321);
         padding: 2rem;
+
+        /* * [수정 1]
+     * 패널의 기본 텍스트 색상을 --bg(배경색)가 아닌 
+     * --text(텍스트색)로 수정해야 글자가 보입니다.
+     */
         color: var(--text);
 
-        .am-tabs{
+        .am-tabs {
             display: flex;
-            gap:.8rem;
+            gap: .8rem;
             margin-bottom: 1.2rem;
+
+            /* [수정 2] 요청하신 대로 스타일 교체 */
             button {
-                flex:1;
+                flex: 1;
+                /* 비활성 버튼: --text 배경, --bg 텍스트 */
+                background-color: var(--text);
+                color: var(--bg);
+                /* 👈 텍스트 색상 추가 */
+
                 &.on {
-                    background-color: var(--text);
-                    color:var(--bg)
+                    /* 활성 버튼: --muted 배경, --text 텍스트 (상속) */
+                    background-color: var(--muted);
+                    color: var(--text);
+                    /* 👈 텍스트 색상 수정 */
                 }
             }
         }
-        .am-form{
+
+        .am-form {
             display: flex;
             flex-direction: column;
             gap: 1rem;
         }
-        .am-close{
+
+        .am-close {
             position: absolute;
             right: -4rem;
             top: 0;
+            /* 닫기 버튼 'X'가 안 보일 수 있으니 색상 지정 */
+            color: var(--bg);
+            background-color: var(--text);
         }
+
         .am-err {
-            color:#c00;
+            /* --danger 변수를 사용하는 것이 좋습니다. */
+            color: var(--danger, #c00);
             margin-top: .4rem;
         }
     }
