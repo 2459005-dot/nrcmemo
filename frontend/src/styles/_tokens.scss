@@ -12,35 +12,45 @@
   --primary-contrast: #ffffff;
 
   --secondary: #10b981;
+  --secondary-contrast: #fff;
   --secondary-hover: #059669;
   --accent: #f97316;
 
   --success: #22c55e;
   --warning: #facc15;
   --danger: #ef4444;
+  --danger-contrast: #fff;
   --info: #3b82f6;
 
   --gradient: linear-gradient(90deg, #239beb 0%, #10b981 100%);
-  --shadow-soft: 0 2px 6px rgba(0,0,0,.05);
-  --shadow-medium: 0 4px 12px rgba(0,0,0,.1);
+  --shadow-soft: 0 2px 6px rgba(0, 0, 0, .05);
+  --shadow-medium: 0 4px 12px rgba(0, 0, 0, .1);
 
   --radius-l: 1rem;
   --radius-s: 0.5rem;
   --focus: #5b9fff;
 }
 
+
 /* 2. 다크 모드 (html[data-theme="dark"]가 붙었을 때) 
    :root { ... } 블록의 *밖에* 있어야 합니다!
 */
 html[data-theme="dark"] {
   /* 회색 계열 (반전) */
-  --bg: #111827;             /* 어두운 배경 */
-  --surface: #1f2937;        /* 조금 밝은 배경 (카드 등) */
-  --surface-alt: #374151;    /* 더 밝은 배경 (호버 등) */
-  --text: #f3f4f6;           /* 밝은 텍스트 */
-  --dark-bl: #ffffff;         /* (반전) 매우 밝은 텍스트 */
-  --muted: #9ca3af;           /* 밝은 회색 텍스트 */
-  --border: #374151;           /* 어두운 경계선 */
+  --bg: #111827;
+  /* 어두운 배경 */
+  --surface: #1f2937;
+  /* 조금 밝은 배경 (카드 등) */
+  --surface-alt: #374151;
+  /* 더 밝은 배경 (호버 등) */
+  --text: #f3f4f6;
+  /* 밝은 텍스트 */
+  --dark-bl: #ffffff;
+  /* (반전) 매우 밝은 텍스트 */
+  --muted: #9ca3af;
+  /* 밝은 회색 텍스트 */
+  --border: #374151;
+  /* 어두운 경계선 */
 
   /*
    * 주요/보조/상태 색상 (변경 없음)
@@ -50,7 +60,8 @@ html[data-theme="dark"] {
    */
   --primary: #239beb;
   --primary-hover: #1f8ad4;
-  --primary-contrast: #ffffff; /* (변경 없음) */
+  --primary-contrast: #ffffff;
+  /* (변경 없음) */
 
   --secondary: #10b981;
   --secondary-hover: #059669;

@@ -13,6 +13,7 @@ import {
   saveAuthToStorage,
   clearAuthStorage
 } from "./api/client"
+import { PostProvider } from "./context/PostProvider"
 
 // 1. (수정) getInitialTheme 함수 단순화
 // localStorage에 저장된 값이 없으면 무조건 'light'로 시작
@@ -97,61 +98,63 @@ function App() {
   }, [isAuthed])
 
   return (
-    <div className='page'>
-      {showHeader && <Header
-        isAuthed={isAuthed}
-        user={user}
-        theme={theme}
-        onLogout={handleLogout}
-        onToggleTheme={toggleTheme}
-      />}
+    <PostProvider>
+      <div className='page'>
+        {showHeader && <Header
+          isAuthed={isAuthed}
+          user={user}
+          theme={theme}
+          onLogout={handleLogout}
+          onToggleTheme={toggleTheme}
+        />}
 
-      <Routes>
-        <Route
-          path='/'
-          element={<Landing theme={theme} onToggleTheme={toggleTheme} />} />
-        {/* 로그인 회원가입 */}
-        <Route
-          path='/admin/login'
-          element={<AuthPanel
-            isAuthed={isAuthed}
-            user={user}
-            me={me}
-            onFetchMe={handleFetchMe}
-            onLogout={handleLogout}
-            onAuthed={handleAuthed}
-            requiredRole="admin"
-          />}
-        />
-        {/* 사용자 보호구역 */}
-        <Route
-          path='/user'
-          element={
-            <ProtectRoute
-              user={user}
-              isAuthed={isAuthed}
-              redirect='/'
-            />}>
-          <Route index element={<Navigate to="/user/dashboard" replace />} />
-          <Route path='dashboard' element={<UserDashboard />} />
-        </Route>
-        {/* 관리자 보호구역 */}
-        <Route
-          path='/admin'
-          element={
-            <ProtectRoute
+        <Routes>
+          <Route
+            path='/'
+            element={<Landing theme={theme} onToggleTheme={toggleTheme} />} />
+          {/* 로그인 회원가입 */}
+          <Route
+            path='/admin/login'
+            element={<AuthPanel
               isAuthed={isAuthed}
               user={user}
+              me={me}
+              onFetchMe={handleFetchMe}
+              onLogout={handleLogout}
+              onAuthed={handleAuthed}
               requiredRole="admin"
-            />
-          }
-        >
-          <Route index element={<Navigate to="/admin/dashboard" replace />} />
-          <Route path='dashboard' element={<AdminDashboard />} />
-        </Route>
-        <Route path='*' element={<Navigate to="/" replace />} />
-      </Routes>
-    </div>
+            />}
+          />
+          {/* 사용자 보호구역 */}
+          <Route
+            path='/user'
+            element={
+              <ProtectRoute
+                user={user}
+                isAuthed={isAuthed}
+                redirect='/'
+              />}>
+            <Route index element={<Navigate to="/user/dashboard" replace />} />
+            <Route path='dashboard' element={<UserDashboard />} />
+          </Route>
+          {/* 관리자 보호구역 */}
+          <Route
+            path='/admin'
+            element={
+              <ProtectRoute
+                isAuthed={isAuthed}
+                user={user}
+                requiredRole="admin"
+              />
+            }
+          >
+            <Route index element={<Navigate to="/admin/dashboard" replace />} />
+            <Route path='dashboard' element={<AdminDashboard />} />
+          </Route>
+          <Route path='*' element={<Navigate to="/" replace />} />
+        </Routes>
+      </div>
+    </PostProvider>
   )
 }
 
