@@ -1,7 +1,52 @@
-.Upload-form{
+.Upload-form {
     display: flex;
     flex-direction: column;
     gap: 2rem;
+
+    // 👇 --- 이 부분을 추가하세요 ---
+    .field {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem; // 레이블과 입력창 사이 간격
+
+        // 텍스트 입력창과 텍스트 영역 공통 스타일
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border); // 테마 - 테두리색
+            border-radius: var(--radius-s);
+            transition: border-color 0.2s, box-shadow 0.2s;
+
+            /* ❗️ (중요) 일반 상태의 색상 지정 */
+            background-color: var(--surface); // 테마 - 표면색
+            color: var(--text); // 테마 - 텍스트색
+
+            &::placeholder {
+                color: var(--muted); // 테마 - 흐린 텍스트색
+            }
+
+            /* ❗️ (중요) 클릭(포커스)했을 때의 색상 지정 */
+            &:focus {
+                // 배경색과 텍스트색은 일반 상태와 동일하게 유지
+                background-color: var(--surface);
+                color: var(--text);
+
+                // 포커스 시각 효과 (테두리 색상 및 그림자)
+                outline: 2px solid transparent; // 기본 outline 제거
+                border-color: var(--primary); // 테마 - 주요색
+                box-shadow: 0 0 0 2px var(--focus); // 테마 - 포커스 하이라이트
+            }
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+    }
+
+    // --- 여기까지 ---
+
     .actions {
         display: flex;
         justify-content: center;

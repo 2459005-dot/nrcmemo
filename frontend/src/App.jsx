@@ -36,24 +36,16 @@ function App() {
   const hideOn = new Set(['/', '/admin/login'])
   const showHeader = isAuthed && !hideOn.has(location.pathname)
 
-  // 2. (수정) 테마 상태 및 토글 함수 (console.log 추가)
   const [theme, setTheme] = useState(getInitialTheme());
 
   const toggleTheme = () => {
-    // 3. (디버깅) 버튼 클릭 시 이 로그가 보여야 합니다.
-    console.log('[App.jsx] toggleTheme 함수 실행됨');
     setTheme(prevTheme => {
       const newTheme = prevTheme === 'light' ? 'dark' : 'light';
-      // 4. (디버깅) 새로운 테마 값이 보여야 합니다.
-      console.log('[App.jsx] 새 테마로 변경:', newTheme);
       return newTheme;
     });
   };
 
-  // 5. (수정) 테마 적용 useEffect (console.log 추가)
   useEffect(() => {
-    // 6. (디버깅) 페이지 로드 시, 그리고 테마 변경 시 이 로그가 보여야 합니다.
-    console.log(`[App.jsx] useEffect 실행: <html>에 data-theme="${theme}" 설정`);
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('theme', theme);
   }, [theme]); // [theme] 의존성 배열이 중요합니다!

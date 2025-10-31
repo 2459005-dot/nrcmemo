@@ -1,14 +1,20 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import "./style/UploadForm.scss"
+import { usePosts } from '../../hooks/usePosts'
+import { uploadToS3 } from '../../api/postApi'
+import { urlToKey } from '../../util/urlToKey'
+import { toPublicUrl } from '../../util/toPublicUrl'
 const UploadForm = ({
- onUploaded,      
-  initail,
+  initial,
   onClose
 }) => {
 
+  const { add, update, load } = usePosts();                    // ✅ Context에서 바로 사용
+  const isEdit = !!initial?._id;
+
   const [form, setForm] = useState({
-    title: initail?.title ?? "",
-    content: initail?.content ?? "",
+    title: initial?.title ?? "",
+    content: initial?.content ?? "",
     file: null,
     preview: null
   })
@@ -16,26 +22,39 @@ const UploadForm = ({
   const [uploading, setUploading] = useState(false)
   const panelRef = useRef(null)
 
+  // 수정 모드: 기존 이미지(첫 번째)를 미리보기로 세팅
+  useEffect(() => {
+    if (!initial) return;
+    const raw = Array.isArray(initial.fileUrl) ? initial.fileUrl[0] : initial.fileUrl;
+    const firstUrl = raw ? toPublicUrl(raw) : null;
+    if (firstUrl) setForm((p) => ({ ...p, preview: firstUrl }));
+  }, [initial]);
+
+
+  // 미리보기 blob URL 정리
+  useEffect(() => {
+    return () => {
+      if (form.preview && form.preview.startsWith("blob:")) {
+        URL.revokeObjectURL(form.preview);
+      }
+    };
+  }, [form.preview]);
 
   const handleFileChange = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
 
-    const file = e.target.files?.[0]
+    if (form.preview && form.preview.startsWith("blob:")) {
+      URL.revokeObjectURL(form.preview);
+    }
+    const previewUrl = URL.createObjectURL(file);
+    setForm((prev) => ({ ...prev, file, preview: previewUrl }));
+  };
 
-    if (!file) return
-
-    if (form.preview) URL.revokeObjectURL(form.preview)
-    const previewUrl = URL.createObjectURL(file)
-
-    setForm((prev) => ({ ...prev, file, preview: previewUrl }))
-
-
-  }
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("[SUBMIT] start", { form, uploading, hasOnUploaded: !!onUploaded }); // ★ 항상 제일 먼저
 
     if (!form.title.trim()) {
-      console.warn("[SUBMIT] title empty");
       alert("제목을 입력하세요.");
       return;
     }
@@ -44,27 +63,44 @@ const UploadForm = ({
     try {
       setUploading(true);
 
-      console.log("[SUBMIT] call onUploaded");
-      await onUploaded?.({
-        title: form.title.trim(),
-        content: form.content.trim(),
-        file: form.file,
-      });
-      console.log("[SUBMIT] onUploaded done");
+      // 업로드: 구현에 따라 URL 또는 key가 반환될 수 있음
+      const uploaded = form.file ? await uploadToS3(form.file) : null;
 
-      if (form.preview) URL.revokeObjectURL(form.preview);
+      // 업로더가 URL을 반환한다면 key로 변환, 이미 key라면 그대로 통과
+      const newKey = uploaded ? urlToKey(uploaded) : null;
+
+      if (isEdit) {
+        const patch = {
+          title: form.title.trim(),
+          content: form.content.trim(),
+          ...(newKey ? { fileKeys: [newKey] } : {}), // 새 파일 선택시에만 교체
+        };
+        await update(initial._id, patch);
+        await load(); // 목록 최신화
+      } else {
+        await add({
+          title: form.title.trim(),
+          content: form.content.trim(),
+          fileKeys: newKey ? [newKey] : [],
+        });
+        await load(); // 목록 최신화
+      }
+
+      if (form.preview && form.preview.startsWith("blob:")) {
+        URL.revokeObjectURL(form.preview);
+      }
       setForm({ title: "", content: "", file: null, preview: null });
 
-      // onClose는 동기 콜백일 가능성이 높음 → await 제거
-      onClose?.();
-      console.log("[SUBMIT] close modal");
+      // ✅ 성공했을 때만 닫기
+      onClose(false);
     } catch (err) {
-      console.error("[SUBMIT] error", err);
+      console.error(err);
       alert(err?.message || "업로드 실패");
     } finally {
       setUploading(false);
     }
   };
+
   return (
     <section className='am-backdrop'>
       <form
@@ -118,8 +154,9 @@ const UploadForm = ({
             </div>
           </div>
         </div>
+
         <div className="actions">
-          <button className="btn ghost" onClick={onClose}>취소</button>
+          <button className="btn ghost" onClick={() => onClose(false)}>취소</button>
           <button
             type='submit'
             disabled={uploading}
