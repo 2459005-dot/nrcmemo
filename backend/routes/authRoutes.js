@@ -71,7 +71,7 @@ router.post("/login", async (req, res) => {
         const user = await User.findOne({
             email: email.toLowerCase(),
             isActive: true
-        })
+        }).select('+passwordHash')
 
 
         const invalidMsg = { message: "이메일 또는 비밀번호가 올바르지 않습니다." };
@@ -205,7 +205,7 @@ router.post("/logout", async (req, res) => {
             httpOnly: true,
             sameSite: "lax",
             secure: process.env.NODE_ENV === "production",
-            path:'/'
+            path: '/'
         })
         return res.status(200).json({ message: '로그아웃 성공' })
     } catch (error) {
