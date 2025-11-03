@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import "./style/AuthModal.scss"
 import api from '../api/client'
+
 const AuthModal = ({
   open,
   onClose,
@@ -24,9 +25,7 @@ const AuthModal = ({
   const [loading, setLoading] = useState(false)
   const [err, setErr] = useState('')
 
-
   useEffect(() => {
-
     if (!open) {
       setMode('register');
       setForm({
@@ -37,7 +36,6 @@ const AuthModal = ({
       setLoading(false)
       setErr('')
     }
-
   }, [open])
 
   useEffect(() => {
@@ -53,7 +51,6 @@ const AuthModal = ({
 
   const handleChange = (e) => {
     const { name, value } = e.target
-
     setForm((prev) => ({ ...prev, [name]: value }))
   }
 
@@ -114,15 +111,11 @@ const AuthModal = ({
 
       setLoading(false)
     }
-
-
   }
-
 
   const handleBackdropClick = () => {
     if (!loading) onClose?.()
   }
-
 
   return (
     <div className='am-backdrop' onClick={handleBackdropClick}>
@@ -179,24 +172,22 @@ const AuthModal = ({
             <div className="am-msg warn">
               유효성 검증 실패로 로그인이 차단 되었습니다. 관리자에게 문의하세요.
             </div>
-          ):attemptInfo.attempts  !=null?(
+          ) : attemptInfo.attempts != null ? (
             <div className='am-subtle'>
               로그인 실패 횟수:{attemptInfo.attempts}/5
-              {typeof attemptInfo.remaining==='number' && `(남은 시도: ${attemptInfo.remaining})`}
+              {typeof attemptInfo.remaining === 'number' && `(남은 시도: ${attemptInfo.remaining})`}
             </div>
           ) : null}
 
-          <button 
-          type='submit'
-          disabled={loading || attemptInfo.locked}
-          className="btn primary">
-            {loading?'처리중...':(mode==='register'?'가입하기':'로그인')}
+          <button
+            type='submit'
+            disabled={loading || attemptInfo.locked}
+            className="btn primary">
+            {loading ? '처리중...' : (mode === 'register' ? '가입하기' : '로그인')}
           </button>
         </form>
-
         <button type='button' onClick={onClose} className='am-close btn' aria-label='닫기'>X</button>
       </div>
-
     </div>
   )
 }

@@ -16,12 +16,10 @@
         border-radius: var(--radius-l);
         box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.321);
         padding: 2rem;
-
-        /* * [수정 1]
-     * 패널의 기본 텍스트 색상을 --bg(배경색)가 아닌 
-     * --text(텍스트색)로 수정해야 글자가 보입니다.
-     */
         color: var(--text);
+
+        max-height: 85vh;
+        overflow-y: auto;
 
         .am-tabs {
             display: flex;
@@ -64,7 +62,7 @@
             background-color: var(--text);
         }
 
-        .am-err {
+        .am-msg {
             /* --danger 변수를 사용하는 것이 좋습니다. */
             color: var(--danger, #c00);
             margin-top: .4rem;

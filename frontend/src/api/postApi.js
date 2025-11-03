@@ -1,4 +1,4 @@
-import {toKeyArray} from "../util/toKeyArray";
+import { toKeyArray } from "../util/toKeyArray";
 import api from "./client";
 
 export const uploadToS3 = async (file, opts = {}) => {
@@ -7,7 +7,7 @@ export const uploadToS3 = async (file, opts = {}) => {
   } = await api.post("/api/upload/presign", {
     filename: file.name,
     contentType: file.type,
-    replaceKey,
+    // replaceKey,
   });
 
   const putRes = await fetch(url, {
@@ -30,39 +30,31 @@ export const createPost = async ({ title, content, fileKeys }) => {
 
   return data;
 };
-
 export const fetchMyPosts = async () => {
-  const { data } = await api.get('/api/posts/my')
+  const { data } = await api.get("/api/posts/my");
 
-  return Array.isArray(data) ? data : []
+  return Array.isArray(data) ? data : [];
 };
-
 export const fetchAllPosts = async () => {
-  const { data } = await api.get('/api/posts')
+  const { data } = await api.get("/api/posts");
 
-  return Array.isArray(data) ? data : []
+  return Array.isArray(data) ? data : [];
 };
 
 export const fetchPostById = async (id) => {
-  const { data } = await api.get(`/api/posts/${id}`)
-
-  return data
+  const { data } = await api.get(`/api/posts/${id}`);
+  return data;
 };
 
 export const updatedPost = async (id, patch) => {
-  const payload = { ...patch }
 
-  if (patch.fileUrl !== undefined) {
-    payload.fileUrl = toKeyArray(payload.fileUrl)
-  }
 
-  const { data } = await api.put(`/api/posts/${id}`, payload)
+  const { data } = await api.put(`/api/posts/${id}`, patch);
 
   return data;
 };
 
 export const deletePost = async (id) => {
-  const { data } = await api.delete(`api/posts/${id}`)
-  
+  const { data } = await api.delete(`/api/posts/${id}`)
   return data
 }
