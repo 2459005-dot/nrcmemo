@@ -10,6 +10,7 @@ const Header = ({
 }) => {
 
     const navigate = useNavigate()
+
     const handleLogout = async () => {
         if (!window.confirm('정말 로그아웃 하시겠어요?')) return
 
@@ -24,12 +25,9 @@ const Header = ({
         <header className='site-header'>
             <div className="inner">
                 <h1 className='logo'>
-                    📷EVERRUN
+                    📷 EVERRUN
                 </h1>
                 {/* 1. (추가) 테마 토글 버튼 */}
-                <button onClick={onToggleTheme} className="btn theme-toggle">
-                    {theme === 'light' ? '🌙' : '☀️'}
-                </button>
                 <div className="auth-area">
                     {isAuthed && (
                         <div>
@@ -37,6 +35,9 @@ const Header = ({
                                 {user?.displayName || user?.email || "user"}
                             </span>
                             <button className='btn logout' onClick={handleLogout}>로그아웃</button>
+                            <button onClick={onToggleTheme} className="btn theme-toggle">
+                                {theme === 'light' ? '🌙' : '☀️'}
+                            </button>
                         </div>
                     )}
                 </div>

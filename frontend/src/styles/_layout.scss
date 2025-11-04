@@ -7,11 +7,19 @@
 .container-sm {
   min-width: 60rem;
   padding: 2rem;
-  @media (max-width:600px) { min-width: auto; }
+
+  @media (max-width:600px) {
+    min-width: auto;
+  }
 }
 
-.section { padding: 2.4rem 0; }
-section.minvh { min-height: 100vh; }
+.section {
+  padding: 2.4rem 0;
+}
+
+section.minvh {
+  min-height: 100vh;
+}
 
 .page {
   padding-top: .5rem;
@@ -25,6 +33,7 @@ section.minvh { min-height: 100vh; }
     background-color: var(--bg);
     box-shadow: var(--shadow-soft);
     padding: 1rem;
+
   }
 
   @media (max-width:800px) {

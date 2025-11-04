@@ -1,12 +1,15 @@
 .inner {
     .search-wrap {
         display: flex;
-        gap:1rem;
+        gap: 1rem;
+
         input {
-            flex:4
+            flex: 6;
+            color: var(--muted);
         }
+
         .btn {
-            flex:1
+            flex: 1
         }
     }
 }

@@ -4,6 +4,7 @@ import "./style/UserDashboard.scss"
 import { uploadToS3 } from '../../api/postApi'
 import { usePosts } from '../../hooks/usePosts'
 import UserPostList from './UserPostList'
+
 const UserDashboard = () => {
   const [search, setSearch] = useState("")
   const [open, setOpen] = useState(false)
@@ -22,7 +23,7 @@ const UserDashboard = () => {
       console.error("[UPLOAD] failed", e);
     }
   };
-  
+
   return (
     <section>
       <div className="inner">
@@ -34,8 +35,8 @@ const UserDashboard = () => {
             placeholder='검색어를 입력해주세요' />
           <button
             className='btn primary'
-            onClick={() => setOpen(true)}
-          >업로드
+            onClick={() => setOpen(true)}>
+            업로드
           </button>
         </div>
       </div>
@@ -50,8 +51,8 @@ const UserDashboard = () => {
         <UserPostList
           items={items}
           loading={loading}
-          onReload={()=>load(search)}
-          //search={search}
+          onReload={() => load(search)}
+        //search={search}
         />
       </div>
     </section>

@@ -15,11 +15,13 @@
         width: min(92vw, 42rem);
         border-radius: var(--radius-l);
         box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.321);
-        padding: 2rem;
         color: var(--text);
 
-        max-height: 85vh;
-        overflow-y: auto;
+        .am-content-scroll {
+            padding: 2rem;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
 
         .am-tabs {
             display: flex;
@@ -55,8 +57,8 @@
 
         .am-close {
             position: absolute;
-            right: -4rem;
-            top: 0;
+            right: -1.5rem;
+            top: -1.5rem;
             /* 닫기 버튼 'X'가 안 보일 수 있으니 색상 지정 */
             color: var(--bg);
             background-color: var(--text);
