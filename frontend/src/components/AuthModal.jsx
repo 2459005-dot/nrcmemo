@@ -124,22 +124,19 @@ const AuthModal = ({
           <button
             type='button'
             className={`btn ${mode === 'login' ? 'on' : ''}`}
-            onClick={() => setMode('login')}
-          >
+            onClick={() => setMode('login')}>
             로그인
           </button>
           <button
             type='button'
             onClick={() => setMode('register')}
-            className={`btn ${mode === 'register' ? 'on' : ''}`}
-          >
+            className={`btn ${mode === 'register' ? 'on' : ''}`}>
             회원가입
           </button>
         </div>
+
         <form className='am-form' onSubmit={submit}>
-
           {mode === 'register' && (
-
             <input
               type="text"
               name='displayName'
@@ -160,8 +157,7 @@ const AuthModal = ({
             value={form.password}
             onChange={handleChange}
             placeholder='비밀번호'
-            required
-          />
+            required />
           {/* 에러 메세지 출력 */}
           {err && (
             <div className={`am-msg  ${attemptInfo.locked ? 'warn' : 'error'}`} role='alert'>

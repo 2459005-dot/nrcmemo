@@ -28,15 +28,12 @@ mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB 연결 성공"))
   .catch((err) => console.error("MongoDB 연결 실패:", err.message));
 
-
 app.get("/", (_req, res) => res.send("PhotoMemo API OK"));
 
 app.use("/api/auth", authRoutes)
 app.use("/api/posts", postRoutes)
 app.use("/api/upload", uploadRoutes)
 app.use("/api/admin", adminRoutes)
-
-
 
 // ── 404
 app.use((req, res, next) => {                    // 추가됨: 없는 경로 처리

@@ -16,10 +16,8 @@ const AuthPanel = ({
   const [open, setOpen] = useState(true)
   const hasRequiredRole = !requiredRole || (user && user.role == requiredRole)
   const navigate = useNavigate()
-
   const isAdminPage = requiredRole === 'admin'
   const title = isAdminPage ? '관리자인증' : '로그인'
-
 
   useEffect(() => {
     if (!isAuthed || !user) return
@@ -55,7 +53,6 @@ const AuthPanel = ({
                 className="btn btn-primary">
                 로그인 / 회원가입
               </button>
-
             </div>
           ) : (
             <div className="auth-row">
@@ -76,8 +73,6 @@ const AuthPanel = ({
             </div>
           )}
 
-
-
           {/* 권한 없음 경고 */}
           {!hasRequiredRole && (
             <div className="alert alert-warn">
@@ -92,19 +87,15 @@ const AuthPanel = ({
             </pre>
           )}
         </div>
-
       </section>
-
     )
   }
-
 
   return (
     <AuthModal
       open={open}
       onClose={() => setOpen(false)}
-      onAuthed={onAuthed}
-    />
+      onAuthed={onAuthed}/>
   )
 }
 

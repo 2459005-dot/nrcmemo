@@ -6,12 +6,10 @@ const { v4: uuidv4 } = require('uuid')
 const {PutObjectCommand } = require('@aws-sdk/client-s3')
 const { s3,presignPut,Bucket} = require('../src/s3')
 
-
 router.get('/ping', (req, res) => res.json({ ok: true }))
 
 router.post('/presign', async (req, res) => {
     try {
-
         const { filename, contentType } = req.body
 
         if (!filename || !contentType) {
@@ -19,15 +17,14 @@ router.post('/presign', async (req, res) => {
         }
 
         const key = `uploads/${Date.now()}-${uuidv4()}${path.extname(filename)}`
-
         const url = await presignPut(key, contentType)
 
         res.json({ url, key })
+
     } catch (error) {
         console.error('presign 실패', error)
         res.status(500).json({ message: "presign 생성 실패" })
     }
 })
-
 
 module.exports = router
