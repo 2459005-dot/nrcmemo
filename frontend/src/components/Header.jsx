@@ -24,7 +24,7 @@ const Header = ({
         <header className='site-header'>
             <div className="inner">
                 <h1 className='logo'>
-                    📷Photomemo
+                    📷EVERRUN
                 </h1>
                 {/* 1. (추가) 테마 토글 버튼 */}
                 <button onClick={onToggleTheme} className="btn theme-toggle">

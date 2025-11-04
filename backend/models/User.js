@@ -51,11 +51,10 @@ userSchema.methods.comparePassword = function (plain) {
     return bcrypt.compare(plain, this.passwordHash)
 }
 
-userSchema.methods.setPassword = async function (plain) {
+userSchema.method.setPassword = async function (plain) {
     const salt = await bcrypt.genSalt(10)
     this.passwordHash = await bcrypt.hash(plain, salt)
 }
-
 
 userSchema.methods.toSafeJSON = function () {
     const obj = this.toObject({ versionKey: false })
