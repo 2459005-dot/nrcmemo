@@ -6,7 +6,6 @@ const Audit = require('../models/AuditLog')
 const { authenticateToken } = require('../middlewares/auth');
 const { requireRole } = require('../middlewares/roles')
 
-
 router.get('/stats',
     authenticateToken,
     requireRole('admin'),
@@ -23,6 +22,23 @@ router.get('/stats',
         res.json({ today, pending, reports: reports?.[0]?.sum ?? 0 })
     })
 
+router.get('/posts',
+    authenticateToken,
+    requireRole('admin'),
+    async (req, res) => {
+        const { page = 1, size = 20, status, q } = req.query
+        const filter = {}
 
+        if (status) filter.status = status
+
+        if (q) filter.title = { $regex: q, $options: 'i' }
+        const items = await Post.find(filter)
+            .sort({ updatedAt: -1 })
+            .skip((+page - 1) * +size)
+            .limit(+size)
+            .select('title user status fileUrl updatedAt')
+        res.json(items)
+    }
+)
 
 module.exports = router

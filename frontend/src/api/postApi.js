@@ -27,17 +27,16 @@ export const createPost = async ({ title, content, fileKeys }) => {
     content,
     fileUrl: fileKeys,
   });
-
   return data;
 };
+
 export const fetchMyPosts = async () => {
   const { data } = await api.get("/api/posts/my");
-
   return Array.isArray(data) ? data : [];
 };
+
 export const fetchAllPosts = async () => {
   const { data } = await api.get("/api/posts");
-
   return Array.isArray(data) ? data : [];
 };
 
@@ -47,10 +46,7 @@ export const fetchPostById = async (id) => {
 };
 
 export const updatedPost = async (id, patch) => {
-
-
   const { data } = await api.put(`/api/posts/${id}`, patch);
-
   return data;
 };
 

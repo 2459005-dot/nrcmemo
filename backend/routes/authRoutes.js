@@ -5,7 +5,7 @@ const bcrypt = require("bcrypt")
 const User = require("../models/User")
 const { authenticateToken } = require('../middlewares/auth'); // ✅ 변경됨: auth → authenticateToken 명시적 미들웨어 사용
 const LOCK_MAX = 5
-const LOCKOUT_DURATION_MS = 10 * 60 * 1000
+const LOCKOUT_DURATION_MS = 2 * 60 * 1000
 
 function makeToken(user) {
     return jwt.sign(
@@ -93,7 +93,7 @@ router.post("/login", async (req, res) => {
         }
 
         // 4 잠금 해제 로직
-        if (!user.isActive && (user.failedLoginAttempts ?? 0) >= LOCK_MAX) {
+        if (!user.isActive) {
             const last = user.lastLoginAttempt ? user.lastLoginAttempt.getTime() : 0
             const passed = Date.now() - last;
             if (passed > LOCKOUT_DURATION_MS) {
