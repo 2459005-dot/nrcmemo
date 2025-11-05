@@ -41,4 +41,33 @@ router.get('/posts',
     }
 )
 
+router.get('/users',
+    authenticateToken,
+    requireRole('admin'),
+    async (req, res) => {
+        const { page = 1, size = 20, role, q } = req.query
+
+        const filter = {}
+
+        if (role) filter.role = role
+
+        if (q) {
+            filter.$or = [
+                { email: { $regex: q, $options: "i" } },
+                { displayName: { $regex: q, $options: "i" } },
+            ]
+        }
+
+        const users = await User.find(filter)
+            .sort({ createdAt: -1 })
+            .skip((+page - 1) * +size)
+            .limit(+size)
+            .select("email displaName role isActive createdAt updatedAt")
+
+        const total = await User.countDocuments(filter)
+
+        res.json({ total, users })
+    }
+)
+
 module.exports = router
