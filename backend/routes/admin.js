@@ -60,7 +60,7 @@ router.get("/users",
             .sort({ createdAt: -1 })
             .skip((+page - 1) * +size)
             .limit(+size)
-            .select("email displaName role isActive createdAt updatedAt");
+            .select("email displayName role isActive createdAt updatedAt");
 
         const total = await User.countDocuments(filter);
 
