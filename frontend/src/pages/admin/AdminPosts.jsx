@@ -1,35 +1,56 @@
-import React, { useEffect, useState } from 'react'
-import { fetchAdminPosts, patchAdminPost } from '../../api/adminApi'
-import AdminFilter from '../../components/admin/AdminFilter'
-import AdminPostsList from '../../components/admin/AdminPostsList'
+import React, { useEffect, useMemo, useState } from "react";
+import { fetchAdminPosts, patchAdminPost } from "../../api/adminApi";
+import AdminPostList from "../../components/admin/AdminPostsList";
+import AdminFilter from "../../components/admin/AdminFilter";
 
 const AdminPosts = () => {
-  const [list, setList] = useState([])
-
+  const [list, setList] = useState([]);
   const [query, setQuery] = useState({
     page: 1,
     size: 10,
-    status: '',
-    q: '',
-    user: ''
-  })
+    status: "",
+    q: "",
+    user: "",
+  });
 
   useEffect(() => {
     (async () => {
-      try {
-        const items = await fetchAdminPosts(query)
-        setList(items)
-      } catch (error) {
-        console.error('게시글 불러오기 실패', error)
-      }
-    })
-  }, [query])
+      const items = await fetchAdminPosts(query);
+      setList(items);
+    })();
+  }, [query]);
+
+  const handleApprove = async (id) => {
+    try {
+      const updated = await patchAdminPost(id, { status: 'approved' })
+
+      setList((prev) => prev.map((it) => (it._id === id ? updated : it)))
+
+    } catch (error) {
+      console.error('승인 처리 실패', error)
+    }
+  }
+
+  const handleReject = async (id) => {
+    try {
+      const updated = await patchAdminPost(id, { status: 'rejected' })
+
+      setList((prev) => prev.map((it) => (it._id === id ? updated : it)))
+
+    } catch (error) {
+      console.error('승인 처리 실패', error)
+    }
+  }
+
   return (
     <div>
       <AdminFilter />
-      <AdminPostsList items={list} />
+      <AdminPostList
+        items={list}
+        onApprove={handleApprove}
+        onReject={handleReject} />
     </div>
-  )
-}
+  );
+};
 
-export default AdminPosts
+export default AdminPosts;
