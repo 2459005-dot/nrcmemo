@@ -1,54 +1,52 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState, useCallback } from "react";
 import { fetchAdminPosts, patchAdminPost } from "../../api/adminApi";
 import AdminPostList from "../../components/admin/AdminPostsList";
-import AdminFilter from "../../components/admin/AdminFilter";
+import AdminPostFilter from "../../components/admin/AdminPostFilter";
+import { getUserId } from "../../util/getUserId";
+import useAdminFiltered from "../../hooks/useAdminFiltered";
 
 const AdminPosts = () => {
-  const [list, setList] = useState([]);
-  const [query, setQuery] = useState({
-    page: 1,
-    size: 10,
-    status: "",
-    q: "",
-    user: "",
-  });
+  const [items, setItems] = useState([]);
+  const [filter, setFilter] = useState({ q: "", user: "", status: "" });
+
+  const getPosts = useCallback(async () => {
+    const res = await fetchAdminPosts(); // 서버 필터 X, 전체 받아오기
+    setItems(res);
+  }, []);
 
   useEffect(() => {
-    (async () => {
-      const items = await fetchAdminPosts(query);
-      setList(items);
-    })();
-  }, [query]);
+    getPosts();
+  }, [getPosts]);
+
+  const normalizedItems = useMemo(
+    () => items.map((it) => ({ ...it, _userId: getUserId(it.user) })),
+    [items]
+  );
+
+  const filteredItems = useAdminFiltered(normalizedItems, filter, {
+    q: "title",
+    user: "_userId",
+    status: "status",
+  });
 
   const handleApprove = async (id) => {
-    try {
-      const updated = await patchAdminPost(id, { status: 'approved' })
-
-      setList((prev) => prev.map((it) => (it._id === id ? updated : it)))
-
-    } catch (error) {
-      console.error('승인 처리 실패', error)
-    }
-  }
+    const updated = await patchAdminPost(id, { status: "approved" });
+    setItems((prev) => prev.map((it) => (it._id === id ? updated : it)));
+  };
 
   const handleReject = async (id) => {
-    try {
-      const updated = await patchAdminPost(id, { status: 'rejected' })
-
-      setList((prev) => prev.map((it) => (it._id === id ? updated : it)))
-
-    } catch (error) {
-      console.error('승인 처리 실패', error)
-    }
-  }
+    const updated = await patchAdminPost(id, { status: "rejected" });
+    setItems((prev) => prev.map((it) => (it._id === id ? updated : it)));
+  };
 
   return (
-    <div>
-      <AdminFilter />
+    <div className="inner">
+      <AdminPostFilter value={filter} onChange={setFilter} />
       <AdminPostList
-        items={list}
+        items={filteredItems}
         onApprove={handleApprove}
-        onReject={handleReject} />
+        onReject={handleReject}
+      />
     </div>
   );
 };
