@@ -6,7 +6,8 @@ const audit = require("../middlewares/audit");
 const { authenticateToken } = require("../middlewares/auth");
 const { requireRole } = require("../middlewares/roles");
 
-router.get("/stats",
+router.get(
+    "/stats",
     authenticateToken,
     requireRole("admin"),
     async (req, res) => {
@@ -21,31 +22,47 @@ router.get("/stats",
     }
 );
 
-router.get("/posts",
+router.get(
+    "/posts",
     authenticateToken,
     requireRole("admin"),
     async (req, res) => {
-        const { page = 1, size = 20, status, q } = req.query;
+        try {
+            const { page = 1, size = 20, status, q, user, userId } = req.query;
 
-        const filter = {};
-        if (status) filter.status = status;
-        if (q) filter.title = { $regex: q, $options: "i" };
-        const items = await Post.find(filter)
-            .sort({ updatedAt: -1 })
-            .skip((+page - 1) * +size)
-            .limit(+size)
-            .select("title user status fileUrl updatedAt");
+            const filter = {};
+            if (status) filter.status = status;
+            if (q) filter.title = { $regex: q, $options: "i" };
 
-        res.json(items);
+            // ✅ 유저 필터: ?user=<id> 또는 ?userId=<id>
+            const uid = user || userId;
+            if (uid) {
+                if (!mongoose.isValidObjectId(uid)) {
+                    return res.status(400).json({ message: "잘못된 userId 형식" });
+                }
+                filter.user = new mongoose.Types.ObjectId(uid);
+            }
+
+            const items = await Post.find(filter)
+                .sort({ updatedAt: -1 })
+                .skip((+page - 1) * +size)
+                .limit(+size)
+                .select("title user status fileUrl updatedAt");
+
+            res.json(items);
+        } catch (err) {
+            console.error("[ADMIN /posts] error", err);
+            res.status(500).json({ message: "서버 오류", error: err.message });
+        }
     }
 );
 
-router.get("/users",
+router.get(
+    "/users",
     authenticateToken,
     requireRole("admin"),
     async (req, res) => {
         const { page = 1, size = 20, role, q } = req.query;
-
         const filter = {};
 
         if (role) filter.role = role;
@@ -63,12 +80,12 @@ router.get("/users",
             .select("email displayName role isActive createdAt updatedAt");
 
         const total = await User.countDocuments(filter);
-
         res.json({ total, users });
     }
 );
 
-router.patch("/posts/:id",
+router.patch(
+    "/posts/:id",
     authenticateToken,
     requireRole("admin"),
     audit({
@@ -91,34 +108,35 @@ router.patch("/posts/:id",
     }
 );
 
-router.patch('/users/:id',
+router.patch(
+    "/users/:id",
     authenticateToken,
-    requireRole('admin'),
+    requireRole("admin"),
     audit({
-        resource: 'user',
-        action: 'update',
-        getTargetId: (req) => req.params.id
+        resource: "user",
+        action: "update",
+        getTargetId: (req) => req.params.id,
     }),
     async (req, res) => {
-        const { role, isActive, resetRock } = req.body
+        const { role, isActive, resetRock } = req.body;
 
-        const updates = {}
+        const updates = {};
 
-        if (role) updates.role = role
+        if (role) updates.role = role;
 
-        if (typeof isActive == 'boolean') updates.isActive = isActive
+        if (typeof isActive == "boolean") updates.isActive = isActive;
 
         if (resetRock) {
-            updates.failedLoginAttempts = 0
-            updates.lastLoginAttempt = null
+            updates.failedLoginAttempts = 0;
+            updates.lastLoginAttempt = null;
         }
         const user = await User.findByIdAndUpdate(req.params.id, updates, {
-            new: true
-        })
+            new: true,
+        });
 
-        if (!user) return res.status(404).json({ message: '사용자 없음' })
-        res.json(user)
+        if (!user) return res.status(404).json({ message: "사용자 없음" });
+        res.json(user);
     }
-)
+);
 
 module.exports = router;

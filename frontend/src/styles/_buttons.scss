@@ -13,6 +13,7 @@
     color: var(--primary-contrast);
     border-color: var(--primary);
   }
+
   &.secondary {
     background: var(--secondary);
     color: var(--secondary-contrast);
@@ -23,6 +24,7 @@
     color: var(--text);
 
   }
+
   &.danger {
     background-color: var(--danger);
     color: var(--danger-contrast);

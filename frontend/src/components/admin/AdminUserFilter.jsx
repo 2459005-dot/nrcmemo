@@ -11,6 +11,7 @@ const AdminUserFilter = ({
   },
 }) => {
 
+
   const set = (patch) => onFilterChange({ ...filterValue, ...patch });
 
   return (
@@ -25,6 +26,7 @@ const AdminUserFilter = ({
         value={filterValue.user}
         onChange={(e) => set({ user: e.target.value.replace(/\s+/g, "") })}
       />
+
       <select
         onChange={(e) => set({ status: e.target.value })}
         value={filterValue.status}>

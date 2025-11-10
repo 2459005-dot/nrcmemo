@@ -1,52 +1,52 @@
-import React, { useEffect, useMemo, useState, useCallback } from "react";
-import { fetchAdminPosts, patchAdminPost } from "../../api/adminApi";
+import React, { useEffect, useMemo, useState } from "react";
+import { fetchAdminPosts } from "../../api/adminApi";
 import AdminPostList from "../../components/admin/AdminPostsList";
 import AdminPostFilter from "../../components/admin/AdminPostFilter";
-import { getUserId } from "../../util/getUserId";
-import useAdminFiltered from "../../hooks/useAdminFiltered";
+
+// 작성자 식별자 통일: 문자열/ObjectId/객체 모두 처리
+const getUserId = (u) => {
+  if (!u) return "";
+  if (typeof u === "string") return u.toLowerCase();
+  if (typeof u === "object") {
+    if (u._id) return String(u._id).toLowerCase();
+    if (u.id) return String(u.id).toLowerCase();
+  }
+  return String(u).toLowerCase();
+};
 
 const AdminPosts = () => {
-  const [items, setItems] = useState([]);
-  const [filter, setFilter] = useState({ q: "", user: "", status: "" });
-
-  const getPosts = useCallback(async () => {
-    const res = await fetchAdminPosts(); // 서버 필터 X, 전체 받아오기
-    setItems(res);
-  }, []);
+  const [rawList, setRawList] = useState([]);
+  const [query, setQuery] = useState({ q: "", user: "", status: "" });
 
   useEffect(() => {
-    getPosts();
-  }, [getPosts]);
+    (async () => {
+      const items = await fetchAdminPosts(); // 서버 필터 X, 전체 받아오기
+      setRawList(Array.isArray(items) ? items : []);
+    })();
+  }, []);
 
-  const normalizedItems = useMemo(
-    () => items.map((it) => ({ ...it, _userId: getUserId(it.user) })),
-    [items]
-  );
+  const items = useMemo(() => {
+    const q = query.q.trim().toLowerCase();
+    const user = query.user.replace(/\s+/g, "").toLowerCase(); // 공백 제거
+    const status = query.status.trim().toLowerCase();
 
-  const filteredItems = useAdminFiltered(normalizedItems, filter, {
-    q: "title",
-    user: "_userId",
-    status: "status",
-  });
+    return rawList.filter((it) => {
+      const title = String(it.title ?? "").toLowerCase();
+      const uid = getUserId(it.user); // ← 핵심
+      const st = String(it.status ?? "").toLowerCase();
 
-  const handleApprove = async (id) => {
-    const updated = await patchAdminPost(id, { status: "approved" });
-    setItems((prev) => prev.map((it) => (it._id === id ? updated : it)));
-  };
+      const matchTitle = q ? title.includes(q) : true;
+      const matchUser = user ? uid.includes(user) : true;
+      const matchStatus = status ? st === status : true;
 
-  const handleReject = async (id) => {
-    const updated = await patchAdminPost(id, { status: "rejected" });
-    setItems((prev) => prev.map((it) => (it._id === id ? updated : it)));
-  };
+      return matchTitle && matchUser && matchStatus;
+    });
+  }, [rawList, query]);
 
   return (
     <div className="inner">
-      <AdminPostFilter value={filter} onChange={setFilter} />
-      <AdminPostList
-        items={filteredItems}
-        onApprove={handleApprove}
-        onReject={handleReject}
-      />
+      <AdminPostFilter value={query} onChange={setQuery} />
+      <AdminPostList items={items} />
     </div>
   );
 };

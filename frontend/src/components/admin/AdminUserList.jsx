@@ -29,6 +29,7 @@ const AdminUserList = ({ items = [], onChangeLock, onChangeRole }) => {
           </button>
         </li>
       ))}
+
       {items.length === 0 && (
         <li>사용자 데이터가 없습니다.</li>
       )}
