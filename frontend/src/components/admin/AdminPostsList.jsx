@@ -1,6 +1,5 @@
 import React from "react";
 import { formatYMD } from "../../util/formatYMD";
-
 const AdminPostsList = ({ items = [], onApprove, onReject }) => {
   return (
     <div className="inner">

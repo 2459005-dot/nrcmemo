@@ -1,6 +1,5 @@
 import React from "react";
 import { formatYMD } from "../../util/formatYMD";
-
 const AdminUserList = ({ items = [], onChangeLock, onChangeRole }) => {
   return (
     <ul className="admin-list">
