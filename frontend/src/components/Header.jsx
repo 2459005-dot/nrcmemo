@@ -25,7 +25,7 @@ const Header = ({
         <header className='site-header'>
             <div className="inner">
                 <h1 className='logo'>
-                    📷 EVERRUN
+                    🏃EVERRUN
                 </h1>
                 {/* 1. (추가) 테마 토글 버튼 */}
                 <div className="auth-area">
