@@ -11,7 +11,6 @@ const AdminUserFilter = ({
   },
 }) => {
 
-
   const set = (patch) => onFilterChange({ ...filterValue, ...patch });
 
   return (
