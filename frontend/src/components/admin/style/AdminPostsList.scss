@@ -1,0 +1,106 @@
+/* =================================
+   Admin Posts List (AdminPostsList.scss)
+   ================================= */
+
+// 1단계에서 변경한 'admin-posts-list' 클래스 이름 사용
+.admin-posts-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border: 1px solid #e0e4e8;
+  border-radius: 8px;
+  overflow: hidden;
+
+  /*
+   * 모든 <li> (행)에 Grid 적용
+   */
+  & > li {
+    display: grid;
+    align-items: center;
+
+    // 🚨 6개의 열(Column) 정의
+    // (번호, 제목, 작성자, 상태, 업데이트, 액션)
+    grid-template-columns: 50px 2fr 1fr 100px 120px 180px;
+    
+    gap: 16px; // 열(셀) 사이 간격
+    border-bottom: 1px solid #f0f2f5; // 행 구분선
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    // 모든 '셀' (li의 자식 <span>) 공통 스타일
+    & > * {
+      padding: 14px 12px;
+      font-size: 14px;
+      text-align: left;
+      word-break: break-all;
+    }
+  }
+
+  /*
+   * 1. 헤더 행 (첫 번째 li) 스타일링
+   */
+  & > li:first-child {
+    background-color: #f7f9fc;
+    border-bottom: 2px solid #d8dde3;
+    & > span {
+      font-weight: 600;
+      color: #333;
+    }
+  }
+
+  /*
+   * 2. 데이터 행 (첫 번째 li 제외) 스타일링
+   */
+  & > li:not(:first-child) {
+    &:hover {
+      background-color: #fcfdff;
+    }
+  }
+
+  /*
+   * 3. '액션(span.actions)' 셀 내부의 버튼들 스타일링
+   */
+  .actions {
+    display: flex; // 버튼들을 가로로 배치
+    gap: 6px; // 버튼 사이 간격
+    
+    // 버튼 자체의 패딩을 줄이기 위해 셀(span)의 패딩을 조정
+    padding: 10px 12px; 
+  }
+
+  .btn {
+    padding: 6px 10px;
+    font-size: 12px;
+    font-weight: 500;
+    border-radius: 6px;
+    cursor: pointer;
+    border: none;
+    color: white; // 글자색 흰색
+    transition: opacity 0.2s;
+
+    &:hover {
+      opacity: 0.8;
+    }
+
+    // JSX에 있던 클래스명(.secondary, .danger) 활용
+    &.secondary {
+      background-color: #007bff; // 승인 (파란색 계열)
+    }
+    &.danger {
+      background-color: #dc3545; // 거절 (빨간색 계열)
+    }
+  }
+  
+  /*
+   * 4. '데이터 없음' 행 스타일링 (항목이 0개일 때)
+   */
+  & > li:only-child {
+    grid-template-columns: 1fr; // 1열로 덮어쓰기
+    text-align: center;
+    padding: 40px;
+    color: #777;
+    font-style: italic;
+  }
+}

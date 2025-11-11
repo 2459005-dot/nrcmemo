@@ -191,7 +191,7 @@ const AuthModal = ({
 
           <button type='button'
             onClick={handleKakaoLogin}
-            className='btn'>
+            className='btn kakao'>
             카카오 로그인
           </button>
         </form>

@@ -1,6 +1,7 @@
 import React from 'react'
 import { useNavigate, NavLink, Link } from 'react-router-dom'
 import "./style/Header.scss"
+
 const Header = ({
     isAuthed,
     user,
@@ -25,7 +26,9 @@ const Header = ({
         <header className='site-header'>
             <div className="inner">
                 <h1 className='logo'>
-                    🏃EVERRUN
+                    <a href="/user/dashboard">
+                        🏃EVERRUN
+                    </a>
                 </h1>
                 {/* 1. (추가) 테마 토글 버튼 */}
                 <div className="auth-area">

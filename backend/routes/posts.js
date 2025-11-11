@@ -108,7 +108,20 @@ router.get('/my', authenticateToken, async (req, res) => {
     const userId = req.user.id || req.user._id;
     if (!userId) return res.status(400).json({ message: '유저 정보 없음' });
 
-    const myPosts = await Post.find({ user: userId })
+    const { search } = req.query;
+
+    const queryCondition = {
+      user: userId
+    };
+
+    if (search) {
+      queryCondition.$or = [
+        { title: { $regex: search, $options: 'i' } },
+        { content: { $regex: search, $options: 'i' } }
+      ];
+    }
+
+    const myPosts = await Post.find(queryCondition)
       .sort({ createdAt: -1 })
       .lean();
 
@@ -121,6 +134,7 @@ router.get('/my', authenticateToken, async (req, res) => {
     });
 
     res.json(data);
+
   } catch (error) {
     console.error('GET /api/posts/my 실패', error)
     res.status(500).json({ message: '서버 오류' })

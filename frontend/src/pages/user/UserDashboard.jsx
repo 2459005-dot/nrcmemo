@@ -32,12 +32,21 @@ const UserDashboard = () => {
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') load(search);
+            }}
             placeholder='검색어를 입력해주세요' />
+          
+          <button className='btn primary' onClick={() => load(search)}>
+            검색
+          </button>
+
           <button
             className='btn primary'
             onClick={() => setOpen(true)}>
             업로드
           </button>
+          
         </div>
       </div>
       <div className="inner">

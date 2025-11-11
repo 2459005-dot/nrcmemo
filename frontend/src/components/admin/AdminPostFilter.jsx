@@ -16,7 +16,7 @@ const AdminPostFilter = ({ value, onChange }) => {
                 } />
             <input
                 type="text"
-                placeholder="userId (선택)"
+                placeholder="ID 검색"
                 value={value.user}
                 onChange={(e) => set({ user: e.target.value.replace(/\s+/g, "") })} />
 

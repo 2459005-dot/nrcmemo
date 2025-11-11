@@ -1,9 +1,14 @@
 import React from "react";
 import { formatYMD } from "../../util/formatYMD";
+import './style/AdminPostsList.scss'
+
 const AdminPostsList = ({ items = [], onApprove, onReject }) => {
+
+  const totalCount = items.length;
+
   return (
     <div className="inner">
-      <ul className="admin-list">
+      <ul className="admin-posts-list">
         <li>
           <span></span>
           <span>제목</span>
@@ -14,7 +19,7 @@ const AdminPostsList = ({ items = [], onApprove, onReject }) => {
         </li>
         {items.map((it, i) => (
           <li key={it._id}>
-            <span className="num">{i + 1}</span>
+            <span className="num">{totalCount - i}</span>
             <span className="title">{it.title}</span>
             <span className="user">{it._userId}</span>
             <span className="status">{it.status}</span>

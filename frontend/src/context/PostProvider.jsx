@@ -11,10 +11,10 @@ export const PostProvider = ({ children }) => {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const load = useCallback(async () => {
+  const load = useCallback(async (search) => {
     setLoading(true);
     try {
-      const list = await fetchMyPosts();
+      const list = await fetchMyPosts(search);
       setItems(list);
     } finally {
       setLoading(false);

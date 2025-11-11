@@ -1,4 +1,5 @@
 import React from "react";
+import './style/AdminUserFilter.scss'
 
 const AdminUserFilter = ({
   filterValue,
@@ -15,15 +16,15 @@ const AdminUserFilter = ({
 
   return (
     <div className="admin-filter">
-      <input
-        type="text"
-        placeholder="email"
-        value={filterValue.q}
-        onChange={(e) => set({ q: e.target.value })}
-      />
-      <input type="text" placeholder="id검색"
+      <input type="text" placeholder="ID 검색"
         value={filterValue.user}
         onChange={(e) => set({ user: e.target.value.replace(/\s+/g, "") })}
+      />
+      <input
+        type="text"
+        placeholder="EMAIL 검색"
+        value={filterValue.q}
+        onChange={(e) => set({ q: e.target.value })}
       />
 
       <select
