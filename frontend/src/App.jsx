@@ -17,6 +17,7 @@ import {
   clearAuthStorage
 } from "./api/client"
 import { PostProvider } from "./context/PostProvider"
+import KakaoCallback from './pages/KakaoCallback'
 
 // 1. (수정) getInitialTheme 함수 단순화
 // localStorage에 저장된 값이 없으면 무조건 'light'로 시작
@@ -107,6 +108,9 @@ function App() {
           <Route
             path='/'
             element={<Landing theme={theme} onToggleTheme={toggleTheme} />} />
+          <Route
+            path='/oauth/kakao'
+            element={<KakaoCallback onAuthed={handleAuthed} />} />
           {/* 로그인 회원가입 */}
           <Route
             path='/admin/login'
