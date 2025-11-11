@@ -1,41 +1,39 @@
 import React from "react";
-
-const AdminUserFilter = ({
-  filterValue,
-  onFilterChange,
-  meta = {
-    total: 0,
-    page: 1,
-    size: 20,
-    totalPage: 1,
-  },
-}) => {
-
-
-  const set = (patch) => onFilterChange({ ...filterValue, ...patch });
-
+import { formatYMD } from "../../util/formatYMD";
+const AdminUserList = ({ items = [], onChangeLock, onChangeRole }) => {
   return (
-    <div className="admin-filter">
-      <input
-        type="text"
-        placeholder="email"
-        value={filterValue.q}
-        onChange={(e) => set({ q: e.target.value })}
-      />
-      <input type="text" placeholder="id검색"
-        value={filterValue.user}
-        onChange={(e) => set({ user: e.target.value.replace(/\s+/g, "") })}
-      />
+    <ul className="admin-list">
+      <li>
+        <span>id</span>
+        <span>email</span>
+        <span>nickname</span>
+        <span>role</span>
+        <span>status</span>
+        <span>date</span>
+      </li>
+      {items.map((it, i) => (
+        <li key={it._id}>
+          <span>{i + 1}</span>
+          <span>{it._id}</span>
+          <span>{it.email}</span>
+          <span>{it.displayName ?? "-"}</span>
+          <span>{it.role}</span>
+          <span>{it.isActive ? "활성" : "비활성"}</span>
+          <span>{it.createdAt ? formatYMD(it.createdAt) : ""}</span>
+          <button className="btn" onClick={() => onChangeRole(it._id, it.role)}>
+            {it.role === 'admin' ? "관리자 해제" : "관리자 지정"}
+          </button>
+          <button className="btn" onClick={() => onChangeLock(it._id, it.isActive)}>
+            {it.isActive ? "활성화" : "비활성화"}
+          </button>
+        </li>
+      ))}
 
-      <select
-        onChange={(e) => set({ status: e.target.value })}
-        value={filterValue.status}>
-        <option value="">전체</option>
-        <option value="true">활성</option>
-        <option value="false">비활성</option>
-      </select>
-    </div>
+      {items.length === 0 && (
+        <li>사용자 데이터가 없습니다.</li>
+      )}
+    </ul>
   );
 };
 
-export default AdminUserFilter;
+export default AdminUserList;
