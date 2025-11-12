@@ -22,13 +22,28 @@ const Header = ({
         }
     }
 
+    // 로고 클릭 시 역할에 따라 path 달라짐
+    const getLogoPath = () => {
+        if (!isAuthed) {
+            return "/";
+        }
+
+        if (user?.role === 'admin') {
+            return "/admin/dashboard";
+        }
+
+        return "/user/dashboard";
+    }
+
+    const logoPath = getLogoPath(); // 경로 계산
+
     return (
         <header className='site-header'>
             <div className="inner">
                 <h1 className='logo'>
-                    <a href="/user/dashboard">
+                    <Link to={logoPath}>
                         🏃EVERRUN
-                    </a>
+                    </Link>
                 </h1>
                 {/* 1. (추가) 테마 토글 버튼 */}
                 <div className="auth-area">
